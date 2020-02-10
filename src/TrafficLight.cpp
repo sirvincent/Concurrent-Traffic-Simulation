@@ -79,17 +79,16 @@ void TrafficLight::cycleThroughPhases()
             if (_currentPhase == TrafficLightPhase::red)
             {
                 _currentPhase = TrafficLightPhase::green;
+                _lightPhaseQueue.send(TrafficLightPhase::green);
             }
             else if (_currentPhase == TrafficLightPhase::green)
             {
                 _currentPhase = TrafficLightPhase::red;
+                _lightPhaseQueue.send(TrafficLightPhase::red);
             }
 
-            // TODO: send update method to message queue using move semantcis
-        }
-
-
-
+            // TODO: hmm does the following line not invalidate _currentPhase, and thus the above ifs will fail?
+            // _lightPhaseQueue.send(std::move(_currentPhase));
 
             lastUpdate = std::chrono::system_clock::now();
         }
