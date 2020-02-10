@@ -36,17 +36,18 @@ enum class TrafficLightPhase : uint8_t
   green
 };
 
-class TrafficLight
+class TrafficLight : TrafficObject
 {
 public:
     // constructor / desctructor
     TrafficLight();
+    ~TrafficLight() = default;
 
     // getters / setters
 
     // typical behaviour methods
     void waitForGreen();
-    void simulate();
+    void simulate() override;
     TrafficLightPhase getCurrentPhase();
 
 private:
