@@ -42,7 +42,8 @@ TrafficLightPhase TrafficLight::getCurrentPhase()
 
 void TrafficLight::simulate()
 {
-    // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class. 
+    // DONE: FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class.
+  threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases, this));
 }
 
 // virtual function which is executed in a thread
@@ -52,4 +53,41 @@ void TrafficLight::cycleThroughPhases()
     // and toggles the current phase of the traffic light between red and green and sends an update method 
     // to the message queue using move semantics. The cycle duration should be a random value between 4 and 6 seconds. 
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles. 
+    double cycleDuration = 4.0;
+    {
+        std::random_device random;  //Will be used to obtain a seed for the random number engine
+        std::mt19937 generate(random()); //Standard mersenne_twister_engine seeded with rd()
+        std::uniform_real_distribution<> distribution(4.0, 6.0);
+        cycleDuration = distribution(generate);
+    }
+
+    std::chrono::time_point<std::chrono::system_clock> lastUpdate = std::chrono::system_clock::now();
+    while (true)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastUpdate).count();
+        if (timeSinceLastUpdate >= cycleDuration)
+        {
+            // TODO: can this be simpler in place of 8 lines? without making single line if statements
+            //       maybe a boolean scoped enum? with operator! overloaded?
+            if (_currentPhase == TrafficLightPhase::red)
+            {
+                _currentPhase = TrafficLightPhase::green;
+            }
+            else if (_currentPhase == TrafficLightPhase::green)
+            {
+                _currentPhase = TrafficLightPhase::red;
+            }
+
+            // TODO: send update method to message queue using move semantcis
+        }
+
+
+
+
+    }
 }
+
+
+
+
