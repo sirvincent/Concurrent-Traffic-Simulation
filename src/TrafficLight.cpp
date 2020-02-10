@@ -74,7 +74,7 @@ void TrafficLight::cycleThroughPhases()
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastUpdate).count();
+        long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate).count();
         if (timeSinceLastUpdate >= cycleDuration)
         {
             // TODO: can this be simpler in place of 8 lines? without making single line if statements
@@ -94,6 +94,8 @@ void TrafficLight::cycleThroughPhases()
 
 
 
+            lastUpdate = std::chrono::system_clock::now();
+        }
     }
 }
 
