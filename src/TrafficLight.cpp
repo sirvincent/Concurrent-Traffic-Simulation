@@ -55,6 +55,7 @@ void TrafficLight::waitForGreen()
 
 TrafficLightPhase TrafficLight::getCurrentPhase()
 {
+    std::lock_guard<std::mutex> lock(_mutex);
     return _currentPhase;
 }
 
@@ -85,6 +86,7 @@ void TrafficLight::cycleThroughPhases()
         {
             // TODO: can this be simpler in place of 8 lines? without making single line if statements
             //       maybe a boolean scoped enum? with operator! overloaded?
+            std::lock_guard<std::mutex> phaseLock(_mutex);
             if (_currentPhase == TrafficLightPhase::red)
             {
                 _currentPhase = TrafficLightPhase::green;
