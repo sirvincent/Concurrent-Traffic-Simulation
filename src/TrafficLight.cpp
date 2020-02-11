@@ -86,20 +86,19 @@ void TrafficLight::cycleThroughPhases()
         {
             // TODO: can this be simpler in place of 8 lines? without making single line if statements
             //       maybe a boolean scoped enum? with operator! overloaded?
-            std::lock_guard<std::mutex> phaseLock(_mutex);
-            if (_currentPhase == TrafficLightPhase::red)
             {
-                _currentPhase = TrafficLightPhase::green;
-                _lightPhaseQueue.send(TrafficLightPhase::green);
-            }
-            else if (_currentPhase == TrafficLightPhase::green)
-            {
-                _currentPhase = TrafficLightPhase::red;
-                _lightPhaseQueue.send(TrafficLightPhase::red);
+                std::lock_guard<std::mutex> lck(_mutex);
+                if (_currentPhase == TrafficLightPhase::red)
+                {
+                    _currentPhase = TrafficLightPhase::green;
+                }
+                else if (_currentPhase == TrafficLightPhase::green)
+                {
+                    _currentPhase = TrafficLightPhase::red;
+                }
             }
 
-            // TODO: hmm does the following line not invalidate _currentPhase, and thus the above ifs will fail?
-            // _lightPhaseQueue.send(std::move(_currentPhase));
+            _lightPhaseQueue.send(std::move(getCurrentPhase()));
 
             lastUpdate = std::chrono::system_clock::now();
             cycleDuration = distribution(generate);
