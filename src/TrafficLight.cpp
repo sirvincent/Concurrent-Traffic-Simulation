@@ -13,10 +13,10 @@ T MessageQueue<T>::receive()
     std::unique_lock<std::mutex> uniqueLock(_mutex);
     _conditionVariable.wait(uniqueLock, [this] { return !_messages.empty(); } );
 
-    T value = std::move(_messages.back());
+    T message = std::move(_messages.back());
     _messages.pop_back();
 
-    return value; // no copy due to Return Value Optimization
+    return message; // no copy due to Return Value Optimization
 }
 
 template <typename T>
