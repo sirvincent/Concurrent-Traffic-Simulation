@@ -48,7 +48,6 @@ class TrafficLight : TrafficObject
 public:
     // constructor / desctructor
     TrafficLight();
-    ~TrafficLight() = default;
 
     // getters / setters
 
